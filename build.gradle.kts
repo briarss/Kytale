@@ -1,4 +1,5 @@
 plugins {
+    kotlin("jvm") version "2.2.0"
     `maven-publish`
     id("hytale-mod") version "0.+"
 }
