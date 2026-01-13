@@ -33,3 +33,5 @@ build/
 
 ### Misc ###
 /run/
+**/run/
+nul
