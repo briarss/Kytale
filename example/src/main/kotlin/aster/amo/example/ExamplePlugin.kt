@@ -71,8 +71,22 @@ class ExamplePlugin(init: JavaPluginInit) : KotlinPlugin(init) {
      */
     private val sessionCache = simpleCache<UUID, Long>()
 
-    init {
-        logger.info { "ExamplePlugin initializing..." }
+    override fun setup() {
+        super.setup()
+        logger.info { "ExamplePlugin setting up..." }
+
+        // Register event handlers
+        registerEvents()
+
+        // Register commands
+        registerCommands()
+
+        logger.info { "ExamplePlugin setup complete." }
+    }
+
+    override fun start() {
+        super.start()
+        logger.info { "ExamplePlugin starting..." }
         logger.info { "Welcome message: ${config.welcomeMessage}" }
         logger.info { "Max players: ${config.maxPlayers}" }
 
@@ -82,19 +96,20 @@ class ExamplePlugin(init: JavaPluginInit) : KotlinPlugin(init) {
             logger.debug { "Async initialization complete" }
         }
 
-        // Register event handlers
-        registerEvents()
-
-        // Register commands
-        registerCommands()
-
         // Demonstrate utility extensions
         demonstrateUtilities()
 
         // Start scheduled tasks
         startScheduledTasks()
 
-        logger.info { "ExamplePlugin initialized successfully!" }
+        logger.info { "ExamplePlugin started successfully!" }
+    }
+
+    override fun shutdown() {
+        logger.info { "ExamplePlugin shutting down..." }
+        // Caches and coroutines are automatically cleaned up by KotlinPlugin
+        super.shutdown()
+        logger.info { "ExamplePlugin shut down." }
     }
 
     /**

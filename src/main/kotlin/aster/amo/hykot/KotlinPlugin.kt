@@ -14,17 +14,43 @@ import kotlin.coroutines.CoroutineContext
  * Provides a built-in [CoroutineScope] tied to the plugin's lifecycle,
  * with automatic cancellation when the plugin is unloaded.
  *
+ * Hytale plugin lifecycle:
+ * 1. Constructor - Basic initialization
+ * 2. [setup] - Register events, commands, and entity systems
+ * 3. [start] - Post-setup initialization (all plugins loaded)
+ * 4. [shutdown] - Cleanup when plugin is unloaded
+ *
  * Example usage:
  * ```kotlin
  * class MyPlugin(init: JavaPluginInit) : KotlinPlugin(init) {
  *
- *     init {
- *         logger.atInfo().log("Plugin initializing!")
+ *     override fun setup() {
+ *         super.setup()
+ *
+ *         events {
+ *             on<PlayerConnectEvent> { e ->
+ *                 // Handle event
+ *             }
+ *         }
+ *
+ *         command("mycommand", "Description") {
+ *             executes { ctx -> /* ... */ }
+ *         }
+ *     }
+ *
+ *     override fun start() {
+ *         super.start()
+ *         logger.atInfo().log("Plugin started!")
  *
  *         launch {
  *             // Coroutine runs on async dispatcher
  *             performAsyncTask()
  *         }
+ *     }
+ *
+ *     override fun shutdown() {
+ *         logger.atInfo().log("Plugin shutting down!")
+ *         super.shutdown()
  *     }
  * }
  * ```
@@ -45,9 +71,40 @@ abstract class KotlinPlugin(init: JavaPluginInit) : JavaPlugin(init), CoroutineS
         get() = supervisorJob + HytaleDispatchers.Async
 
     /**
-     * Cancels all coroutines launched in this plugin's scope.
+     * Called during plugin setup phase to register events, commands, and systems.
      *
-     * Call this when the plugin is being unloaded to clean up resources.
+     * Override this method and call `super.setup()` first. This is the safe place
+     * to register event handlers, commands, and entity systems.
+     */
+    override fun setup() {
+        super.setup()
+        // Subclasses register events/commands/systems here
+    }
+
+    /**
+     * Called after all plugins have been set up.
+     *
+     * Override this method and call `super.start()` first. Use this for
+     * initialization that depends on other plugins being loaded.
+     */
+    override fun start() {
+        super.start()
+        // Subclasses perform post-setup initialization here
+    }
+
+    /**
+     * Called when the plugin is being shut down by the server.
+     *
+     * Override this method for cleanup. Call `super.shutdown()` last to ensure
+     * coroutines are cancelled after your cleanup completes.
+     */
+    override fun shutdown() {
+        cancelCoroutines()
+        super.shutdown()
+    }
+
+    /**
+     * Cancels all coroutines launched in this plugin's scope.
      *
      * @param message optional cancellation message for debugging
      */
