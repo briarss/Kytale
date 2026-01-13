@@ -1,34 +1,71 @@
 package aster.amo.hykot.extension
 
 import aster.amo.hykot.coroutines.HytaleDispatchers
+import com.hypixel.hytale.server.core.Message
+import com.hypixel.hytale.server.core.universe.PlayerRef
 import kotlinx.coroutines.withContext
 import java.util.UUID
 
 /**
- * Extension functions for player-related operations.
+ * Extension functions for Hytale PlayerRef operations.
  *
- * In Hytale, players are accessed via [PlayerRef] from the Universe.
- * A Universe represents the entire server including all Worlds and player data.
- *
- * These extensions provide Kotlin-idiomatic utilities that work with
- * PlayerRef UUIDs and common player operations.
- *
- * @see com.hypixel.hytale.server.core.universe.Universe
- * @see com.hypixel.hytale.server.core.universe.PlayerRef
+ * A PlayerRef is a reference to a player within the Universe,
+ * providing access to player data and actions.
  */
 
 /**
+ * Sends a raw text message to this player.
+ *
+ * @param text the message text
+ */
+fun PlayerRef.sendMessage(text: String) {
+    sendMessage(Message.raw(text))
+}
+
+/**
+ * Sends a colored message to this player.
+ *
+ * @param hex the hex color (e.g., "0xFF5555")
+ * @param text the message text
+ */
+fun PlayerRef.sendColoredMessage(hex: String, text: String) {
+    sendMessage(Message.raw(text).apply { color(hex) })
+}
+
+/**
+ * Sends multiple messages to this player.
+ *
+ * @param messages the messages to send
+ */
+fun PlayerRef.sendMessages(vararg messages: String) {
+    messages.forEach { sendMessage(Message.raw(it)) }
+}
+
+/**
+ * Sends multiple Message objects to this player.
+ *
+ * @param messages the messages to send
+ */
+fun PlayerRef.sendMessages(vararg messages: Message) {
+    messages.forEach { sendMessage(it) }
+}
+
+/**
+ * Executes a block on the main server thread for this player.
+ *
+ * @param block the code to execute
+ * @return the result of the block
+ */
+suspend fun <T> PlayerRef.onMainThread(block: suspend () -> T): T {
+    return withContext(HytaleDispatchers.Main) { block() }
+}
+
+// ============================================================================
+// General Utility Functions
+// ============================================================================
+
+/**
  * Executes a block of code on the main thread.
- *
- * Useful for performing operations that must be synchronized with the
- * game loop.
- *
- * Example:
- * ```kotlin
- * onMainThread {
- *     // Safe to modify game state here
- * }
- * ```
  *
  * @param block the code to execute
  * @return the result of the block
@@ -40,20 +77,11 @@ suspend fun <T> onMainThread(block: suspend () -> T): T {
 /**
  * Performs an action if the condition is true.
  *
- * Example:
- * ```kotlin
- * player.ifTrue(player.isOnline) {
- *     sendMessage("Hello!")
- * }
- * ```
- *
  * @param condition the condition to check
  * @param block the action to perform
  */
 inline fun <T> T.ifTrue(condition: Boolean, block: T.() -> Unit): T {
-    if (condition) {
-        block()
-    }
+    if (condition) block()
     return this
 }
 
@@ -64,9 +92,7 @@ inline fun <T> T.ifTrue(condition: Boolean, block: T.() -> Unit): T {
  * @param block the action to perform
  */
 inline fun <T> T.ifFalse(condition: Boolean, block: T.() -> Unit): T {
-    if (!condition) {
-        block()
-    }
+    if (!condition) block()
     return this
 }
 
@@ -93,9 +119,7 @@ inline fun <T> T?.whenNotNull(block: (T) -> Unit): T? {
 }
 
 /**
- * Extension for running code safely with exception handling.
- *
- * Catches any exception and returns null instead of throwing.
+ * Runs code safely with exception handling.
  *
  * @param block the code to execute
  * @return the result or null if an exception occurred
@@ -109,7 +133,7 @@ inline fun <T> safely(block: () -> T): T? {
 }
 
 /**
- * Extension for running code safely with a default value.
+ * Runs code safely with a default value.
  *
  * @param default the value to return if an exception occurs
  * @param block the code to execute
@@ -124,7 +148,7 @@ inline fun <T> safelyOrDefault(default: T, block: () -> T): T {
 }
 
 /**
- * Extension for running code safely with exception logging.
+ * Runs code safely with exception logging.
  *
  * @param onError callback for handling the exception
  * @param block the code to execute
@@ -138,6 +162,10 @@ inline fun <T> safelyWithLogging(onError: (Exception) -> Unit, block: () -> T): 
         null
     }
 }
+
+// ============================================================================
+// UUID Utilities
+// ============================================================================
 
 /**
  * Validates a UUID string.
@@ -165,6 +193,10 @@ fun String.toUUIDOrNull(): UUID? {
         null
     }
 }
+
+// ============================================================================
+// Duration Formatting
+// ============================================================================
 
 /**
  * Formats a player-friendly duration string.
@@ -216,6 +248,10 @@ fun formatDurationDetailed(millis: Long): String {
     }.trim()
 }
 
+// ============================================================================
+// String Utilities
+// ============================================================================
+
 /**
  * Truncates a string to the specified length with an ellipsis.
  *
@@ -255,14 +291,6 @@ fun String.center(width: Int, padChar: Char = ' '): String {
 }
 
 /**
- * Repeats this string n times.
- *
- * @param n the number of repetitions
- * @return the repeated string
- */
-fun String.repeat(n: Int): String = (1..n).joinToString("") { this }
-
-/**
  * Converts a camelCase string to Title Case.
  *
  * @return the title case string
@@ -280,6 +308,10 @@ fun String.camelToTitleCase(): String {
 fun String.snakeToTitleCase(): String {
     return split("_").joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
 }
+
+// ============================================================================
+// Number Formatting
+// ============================================================================
 
 /**
  * Formats a number with thousands separators.
