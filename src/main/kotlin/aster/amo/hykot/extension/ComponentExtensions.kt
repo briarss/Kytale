@@ -1,231 +1,201 @@
 package aster.amo.hykot.extension
 
+import com.hypixel.hytale.server.core.Message
+
 /**
- * DSL for building text components with formatting.
+ * DSL extensions for Hytale's Message system.
  *
- * Provides a Kotlin-idiomatic way to create formatted text messages
- * for use in chat, action bars, and other UI elements.
+ * Provides Kotlin-idiomatic ways to create formatted messages
+ * using Hytale's native Message and FormattedMessage classes.
  *
  * Example:
  * ```kotlin
- * val message = text {
+ * val message = message {
  *     +"Welcome "
- *     bold { +"to the server!" }
- *     newline()
- *     color(TextColor.GOLD) { +"Enjoy your stay." }
+ *     colored("0xFFD700") { +"to the server!" }
+ *     child {
+ *         +"\nEnjoy your stay."
+ *     }
  * }
  * ```
  */
 
 /**
- * Represents text colors available for formatting.
+ * Common hex color constants for convenience.
  */
-enum class TextColor(val code: String) {
-    BLACK("0"),
-    DARK_BLUE("1"),
-    DARK_GREEN("2"),
-    DARK_AQUA("3"),
-    DARK_RED("4"),
-    DARK_PURPLE("5"),
-    GOLD("6"),
-    GRAY("7"),
-    DARK_GRAY("8"),
-    BLUE("9"),
-    GREEN("a"),
-    AQUA("b"),
-    RED("c"),
-    LIGHT_PURPLE("d"),
-    YELLOW("e"),
-    WHITE("f")
+object Colors {
+    const val BLACK = "0x000000"
+    const val DARK_BLUE = "0x0000AA"
+    const val DARK_GREEN = "0x00AA00"
+    const val DARK_AQUA = "0x00AAAA"
+    const val DARK_RED = "0xAA0000"
+    const val DARK_PURPLE = "0xAA00AA"
+    const val GOLD = "0xFFAA00"
+    const val GRAY = "0xAAAAAA"
+    const val DARK_GRAY = "0x555555"
+    const val BLUE = "0x5555FF"
+    const val GREEN = "0x55FF55"
+    const val AQUA = "0x55FFFF"
+    const val RED = "0xFF5555"
+    const val LIGHT_PURPLE = "0xFF55FF"
+    const val YELLOW = "0xFFFF55"
+    const val WHITE = "0xFFFFFF"
 }
 
 /**
- * Builder for creating formatted text components.
+ * Builder for creating Hytale Message instances with a DSL.
  */
-class TextBuilder {
-    private val parts = mutableListOf<TextPart>()
+class MessageBuilder {
+    private var rootMessage: Message? = null
+    private var currentText: StringBuilder = StringBuilder()
+    private var currentColor: String? = null
 
     /**
-     * Appends plain text.
+     * Appends plain text to the message.
      *
      * @param text the text to append
      */
     operator fun String.unaryPlus() {
-        parts.add(TextPart.Plain(this))
+        currentText.append(this)
     }
 
     /**
-     * Appends text with a specific color.
+     * Sets the color for the current message segment.
      *
-     * @param color the text color
+     * @param hex the hex color string (e.g., "0xFFD700")
+     */
+    fun color(hex: String) {
+        currentColor = hex
+    }
+
+    /**
+     * Creates a colored text segment.
+     *
+     * @param hex the hex color string
      * @param block builder for the colored content
      */
-    fun color(color: TextColor, block: TextBuilder.() -> Unit) {
-        val nested = TextBuilder().apply(block)
-        parts.add(TextPart.Colored(color, nested.build()))
+    fun colored(hex: String, block: MessageBuilder.() -> Unit) {
+        flushCurrent()
+        val nested = MessageBuilder().apply(block)
+        val nestedMsg = nested.build()
+        nestedMsg.color(hex)
+        addToRoot(nestedMsg)
     }
 
     /**
-     * Appends bold text.
+     * Adds a child message.
      *
-     * @param block builder for the bold content
+     * @param block builder for the child message
      */
-    fun bold(block: TextBuilder.() -> Unit) {
-        val nested = TextBuilder().apply(block)
-        parts.add(TextPart.Bold(nested.build()))
-    }
-
-    /**
-     * Appends italic text.
-     *
-     * @param block builder for the italic content
-     */
-    fun italic(block: TextBuilder.() -> Unit) {
-        val nested = TextBuilder().apply(block)
-        parts.add(TextPart.Italic(nested.build()))
-    }
-
-    /**
-     * Appends underlined text.
-     *
-     * @param block builder for the underlined content
-     */
-    fun underline(block: TextBuilder.() -> Unit) {
-        val nested = TextBuilder().apply(block)
-        parts.add(TextPart.Underline(nested.build()))
-    }
-
-    /**
-     * Appends strikethrough text.
-     *
-     * @param block builder for the strikethrough content
-     */
-    fun strikethrough(block: TextBuilder.() -> Unit) {
-        val nested = TextBuilder().apply(block)
-        parts.add(TextPart.Strikethrough(nested.build()))
-    }
-
-    /**
-     * Appends obfuscated (scrambled) text.
-     *
-     * @param block builder for the obfuscated content
-     */
-    fun obfuscated(block: TextBuilder.() -> Unit) {
-        val nested = TextBuilder().apply(block)
-        parts.add(TextPart.Obfuscated(nested.build()))
+    fun child(block: MessageBuilder.() -> Unit) {
+        flushCurrent()
+        val nested = MessageBuilder().apply(block)
+        addToRoot(nested.build())
     }
 
     /**
      * Appends a newline.
      */
     fun newline() {
-        parts.add(TextPart.Plain("\n"))
+        currentText.append("\n")
     }
 
     /**
      * Appends a space.
      */
     fun space() {
-        parts.add(TextPart.Plain(" "))
+        currentText.append(" ")
+    }
+
+    private fun flushCurrent() {
+        if (currentText.isNotEmpty()) {
+            val msg = Message.raw(currentText.toString())
+            currentColor?.let { msg.color(it) }
+            addToRoot(msg)
+            currentText = StringBuilder()
+            currentColor = null
+        }
+    }
+
+    private fun addToRoot(msg: Message) {
+        if (rootMessage == null) {
+            rootMessage = msg
+        } else {
+            rootMessage!!.children.add(msg)
+        }
     }
 
     /**
-     * Builds the final formatted string.
+     * Builds the final Message.
      *
-     * @return the formatted text string
+     * @return the constructed Message
      */
-    fun build(): String {
-        return parts.joinToString("") { it.render() }
+    fun build(): Message {
+        flushCurrent()
+        return rootMessage ?: Message.raw("")
     }
 }
 
 /**
- * Sealed class representing different text formatting parts.
- */
-sealed class TextPart {
-    abstract fun render(): String
-
-    data class Plain(val text: String) : TextPart() {
-        override fun render() = text
-    }
-
-    data class Colored(val color: TextColor, val content: String) : TextPart() {
-        override fun render() = "§${color.code}$content§r"
-    }
-
-    data class Bold(val content: String) : TextPart() {
-        override fun render() = "§l$content§r"
-    }
-
-    data class Italic(val content: String) : TextPart() {
-        override fun render() = "§o$content§r"
-    }
-
-    data class Underline(val content: String) : TextPart() {
-        override fun render() = "§n$content§r"
-    }
-
-    data class Strikethrough(val content: String) : TextPart() {
-        override fun render() = "§m$content§r"
-    }
-
-    data class Obfuscated(val content: String) : TextPart() {
-        override fun render() = "§k$content§r"
-    }
-}
-
-/**
- * Creates a formatted text component using the builder DSL.
+ * Creates a Message using the builder DSL.
  *
  * Example:
  * ```kotlin
- * val greeting = text {
- *     color(TextColor.GREEN) { +"Hello, " }
- *     bold { +playerName }
+ * val greeting = message {
+ *     colored(Colors.GREEN) { +"Hello, " }
+ *     +playerName
  *     +"!"
  * }
+ * player.sendMessage(greeting)
  * ```
  *
  * @param block the builder configuration
- * @return the formatted text string
+ * @return the constructed Message
  */
-fun text(block: TextBuilder.() -> Unit): String {
-    return TextBuilder().apply(block).build()
+fun message(block: MessageBuilder.() -> Unit): Message {
+    return MessageBuilder().apply(block).build()
 }
 
 /**
- * Creates a simple colored text string.
+ * Creates a simple colored message.
  *
- * @param color the text color
+ * @param hex the hex color string
  * @param content the text content
- * @return the colored text string
+ * @return the colored Message
  */
-fun coloredText(color: TextColor, content: String): String {
-    return "§${color.code}$content§r"
+fun coloredMessage(hex: String, content: String): Message {
+    return Message.raw(content).apply { color(hex) }
 }
 
 /**
- * Strips all color codes from a string.
+ * Extension to set color on a Message and return it for chaining.
  *
- * @return the string without color codes
+ * @param hex the hex color string
+ * @return this Message for chaining
  */
-fun String.stripColors(): String {
-    return this.replace(Regex("§[0-9a-fk-or]"), "")
+fun Message.withColor(hex: String): Message {
+    this.color(hex)
+    return this
 }
 
 /**
- * Translates alternate color codes to Minecraft-style codes.
+ * Extension to add a child message and return parent for chaining.
  *
- * @param altCode the alternate code character (default: '&')
- * @return the string with translated color codes
+ * @param child the child Message to add
+ * @return this Message for chaining
  */
-fun String.translateColorCodes(altCode: Char = '&'): String {
-    val chars = toCharArray()
-    for (i in 0 until chars.size - 1) {
-        if (chars[i] == altCode && "0123456789abcdefklmnor".contains(chars[i + 1], ignoreCase = true)) {
-            chars[i] = '§'
-            chars[i + 1] = chars[i + 1].lowercaseChar()
-        }
-    }
-    return String(chars)
+fun Message.withChild(child: Message): Message {
+    this.children.add(child)
+    return this
+}
+
+/**
+ * Extension to add a raw text child.
+ *
+ * @param text the text for the child message
+ * @return this Message for chaining
+ */
+fun Message.withChild(text: String): Message {
+    this.children.add(Message.raw(text))
+    return this
 }

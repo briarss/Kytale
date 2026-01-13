@@ -119,12 +119,11 @@ class ExamplePlugin(init: JavaPluginInit) : KotlinPlugin(init) {
         events {
             // Chat event with formatted response
             on { event: PlayerChatEvent ->
-                val chatMessage = text {
-                    color(TextColor.GOLD) { +"[Chat] " }
-                    +event.content
-                }
-                event.content = chatMessage
-                logger.debug { "Chat message: ${chatMessage.stripColors()}" }
+                // gold in int
+                val chatMessage = Message.raw("[CHAT]").color("0xA7F400")
+                chatMessage.children.add(Message.raw(event.content))
+                event.content = chatMessage.rawText!!
+                logger.debug { "Chat message: ${chatMessage.rawText}" }
             }
 
             // Player connect event
@@ -282,13 +281,17 @@ class ExamplePlugin(init: JavaPluginInit) : KotlinPlugin(init) {
         val duplicates = listOf(1, 2, 2, 3, 3, 3).duplicates()
         logger.debug { "Duplicates: $duplicates" }
 
-        // Component/text building
-        val formattedText = text {
-            color(TextColor.GREEN) { +"Server " }
-            bold { +"Status: " }
-            color(TextColor.GOLD) { +"Online" }
+        // Message building with Hytale's native Message class
+        val formattedMessage = message {
+            colored(Colors.GREEN) { +"Server " }
+            +"Status: "
+            colored(Colors.GOLD) { +"Online" }
         }
-        logger.debug { "Formatted text: $formattedText" }
+        logger.debug { "Formatted message: ${formattedMessage.rawText}" }
+
+        // Or use extension functions for simpler cases
+        val simpleColored = coloredMessage(Colors.AQUA, "Hello World!")
+        logger.debug { "Simple colored: ${simpleColored.rawText}" }
 
         // UUID parsing
         val validUuid = "550e8400-e29b-41d4-a716-446655440000"
