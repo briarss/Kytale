@@ -1,4 +1,4 @@
-package aster.amo.hykot.dsl
+package aster.amo.kytale.dsl
 
 import com.hypixel.hytale.event.IBaseEvent
 import com.hypixel.hytale.server.core.plugin.JavaPlugin

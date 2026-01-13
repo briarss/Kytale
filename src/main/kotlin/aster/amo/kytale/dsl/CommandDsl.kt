@@ -1,6 +1,6 @@
-package aster.amo.hykot.dsl
+package aster.amo.kytale.dsl
 
-import aster.amo.hykot.coroutines.HytaleDispatchers
+import aster.amo.kytale.coroutines.HytaleDispatchers
 import com.hypixel.hytale.server.core.command.system.AbstractCommand
 import com.hypixel.hytale.server.core.command.system.CommandContext
 import com.hypixel.hytale.server.core.plugin.JavaPlugin

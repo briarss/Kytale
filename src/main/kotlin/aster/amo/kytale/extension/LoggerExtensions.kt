@@ -1,4 +1,4 @@
-package aster.amo.hykot.extension
+package aster.amo.kytale.extension
 
 import com.hypixel.hytale.logger.HytaleLogger
 

@@ -1,4 +1,4 @@
-package aster.amo.hykot.coroutines
+package aster.amo.kytale.coroutines
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred

@@ -1,6 +1,6 @@
-package aster.amo.hykot.dsl
+package aster.amo.kytale.dsl
 
-import aster.amo.hykot.coroutines.HytaleDispatchers
+import aster.amo.kytale.coroutines.HytaleDispatchers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

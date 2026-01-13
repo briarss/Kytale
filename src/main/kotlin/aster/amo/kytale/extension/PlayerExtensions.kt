@@ -1,6 +1,6 @@
-package aster.amo.hykot.extension
+package aster.amo.kytale.extension
 
-import aster.amo.hykot.coroutines.HytaleDispatchers
+import aster.amo.kytale.coroutines.HytaleDispatchers
 import com.hypixel.hytale.server.core.Message
 import com.hypixel.hytale.server.core.universe.PlayerRef
 import kotlinx.coroutines.withContext

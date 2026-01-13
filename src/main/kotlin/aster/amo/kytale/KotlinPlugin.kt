@@ -1,6 +1,6 @@
-package aster.amo.hykot
+package aster.amo.kytale
 
-import aster.amo.hykot.coroutines.HytaleDispatchers
+import aster.amo.kytale.coroutines.HytaleDispatchers
 import com.hypixel.hytale.server.core.plugin.JavaPlugin
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit
 import kotlinx.coroutines.CoroutineScope

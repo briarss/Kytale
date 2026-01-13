@@ -1,11 +1,11 @@
-package aster.amo.hykot
+package aster.amo.kytale
 
 import com.hypixel.hytale.logger.HytaleLogger
 import com.hypixel.hytale.server.core.plugin.JavaPlugin
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit
 
 /**
- * HyKot - Kotlin Language Loader for Hytale.
+ * Kytale - Kotlin Language Loader for Hytale.
  *
  * Provides Kotlin runtime and idiomatic DSLs for Hytale server plugin development.
  * Bundles Kotlin stdlib, reflect, coroutines, and serialization libraries with
@@ -13,22 +13,22 @@ import com.hypixel.hytale.server.core.plugin.JavaPluginInit
  *
  * @property init the plugin initialization context provided by the server
  */
-class HyKot(init: JavaPluginInit) : JavaPlugin(init) {
+class Kytale(init: JavaPluginInit) : JavaPlugin(init) {
 
     /**
      * Companion object holding the singleton instance and version information.
      */
     companion object {
-        private lateinit var instance: HyKot
+        private lateinit var instance: Kytale
 
         /**
-         * Returns the singleton instance of the HyKot plugin.
+         * Returns the singleton instance of the Kytale plugin.
          *
-         * @return the active HyKot instance
+         * @return the active Kytale instance
          * @throws IllegalStateException if accessed before plugin initialization
          */
         @JvmStatic
-        fun getInstance(): HyKot = instance
+        fun getInstance(): Kytale = instance
 
         /**
          * The Kotlin version bundled with this loader.
@@ -52,7 +52,7 @@ class HyKot(init: JavaPluginInit) : JavaPlugin(init) {
         instance = this
 
         logger.atInfo().log(
-            "HyKot v%s initialized - Kotlin %s, Coroutines %s, Serialization %s",
+            "Kytale v%s initialized - Kotlin %s, Coroutines %s, Serialization %s",
             manifest.version.toString(),
             KOTLIN_VERSION,
             COROUTINES_VERSION,

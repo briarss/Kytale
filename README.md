@@ -1,4 +1,4 @@
-# HyKot
+# Kytale
 
 Kotlin language loader for Hytale server plugins.
 
@@ -19,7 +19,7 @@ Bundles Kotlin runtime with package relocation and provides idiomatic DSLs for p
 
 ### Gradle Setup
 
-Add the CurseMaven repository and HyKot dependency to your `build.gradle.kts`:
+Add the CurseMaven repository and Kytale dependency to your `build.gradle.kts`:
 
 ```kotlin
 repositories {
@@ -27,18 +27,18 @@ repositories {
 }
 
 dependencies {
-    compileOnly("curse.maven:hykot-PROJECTID:FILEID")
+    compileOnly("curse.maven:kytale-PROJECTID:FILEID")
 }
 ```
 
 ### Runtime Dependency
 
-Add HyKot as a dependency in your `manifest.json`:
+Add Kytale as a dependency in your `manifest.json`:
 
 ```json
 {
   "Dependencies": {
-    "AmoAster:HyKot": "*"
+    "AmoAster:Kytale": "*"
   }
 }
 ```
@@ -82,7 +82,7 @@ class MyPlugin(init: JavaPluginInit) : KotlinPlugin(init) {
 
 ## Plugin Lifecycle
 
-HyKot plugins follow Hytale's standard lifecycle:
+Kytale plugins follow Hytale's standard lifecycle:
 
 1. **Constructor** - Basic initialization
 2. **setup()** - Register events, commands, and entity systems

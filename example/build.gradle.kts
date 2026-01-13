@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    // Depend on HyKot - provides Kotlin runtime
+    // Depend on Kytale - provides Kotlin runtime
     implementation(project(":"))
 
     // Compile-only annotations
@@ -38,13 +38,13 @@ tasks.named<ProcessResources>("processResources") {
     val replaceProperties = mapOf(
         "plugin_group" to "AmoAster",
         "plugin_maven_group" to project.group,
-        "plugin_name" to "HyKotExample",
+        "plugin_name" to "KytaleExample",
         "plugin_version" to project.version,
         "server_version" to findProperty("server_version"),
-        "plugin_description" to "Example plugin demonstrating HyKot features",
+        "plugin_description" to "Example plugin demonstrating Kytale features",
         "plugin_website" to "",
         "plugin_main_entrypoint" to "aster.amo.example.ExamplePlugin",
-        "plugin_author" to "HyKot"
+        "plugin_author" to "Kytale"
     )
 
     filesMatching("manifest.json") {
@@ -60,7 +60,7 @@ hytale {
 
 tasks.withType<Jar> {
     manifest {
-        attributes["Specification-Title"] = "HyKotExample"
+        attributes["Specification-Title"] = "KytaleExample"
         attributes["Specification-Version"] = version
         attributes["Implementation-Title"] = project.name
         attributes["Implementation-Version"] = version.toString()

@@ -1,16 +1,16 @@
 package aster.amo.example
 
-import aster.amo.hykot.KotlinPlugin
-import aster.amo.hykot.coroutines.onAsync
-import aster.amo.hykot.coroutines.onIO
-import aster.amo.hykot.coroutines.asFuture
-import aster.amo.hykot.dsl.command
-import aster.amo.hykot.dsl.events
-import aster.amo.hykot.dsl.jsonConfig
-import aster.amo.hykot.dsl.schedule
-import aster.amo.hykot.dsl.scheduleRepeating
-import aster.amo.hykot.extension.*
-import aster.amo.hykot.util.*
+import aster.amo.kytale.KotlinPlugin
+import aster.amo.kytale.coroutines.onAsync
+import aster.amo.kytale.coroutines.onIO
+import aster.amo.kytale.coroutines.asFuture
+import aster.amo.kytale.dsl.command
+import aster.amo.kytale.dsl.events
+import aster.amo.kytale.dsl.jsonConfig
+import aster.amo.kytale.dsl.schedule
+import aster.amo.kytale.dsl.scheduleRepeating
+import aster.amo.kytale.extension.*
+import aster.amo.kytale.util.*
 import com.hypixel.hytale.server.core.Message
 import com.hypixel.hytale.server.core.event.events.player.PlayerChatEvent
 import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent

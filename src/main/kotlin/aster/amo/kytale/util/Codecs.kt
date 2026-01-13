@@ -1,4 +1,4 @@
-package aster.amo.hykot.util
+package aster.amo.kytale.util
 
 /**
  * Utility functions for common data operations.

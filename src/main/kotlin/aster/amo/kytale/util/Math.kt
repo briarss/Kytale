@@ -1,4 +1,4 @@
-package aster.amo.hykot.util
+package aster.amo.kytale.util
 
 import kotlin.math.PI
 import kotlin.math.abs

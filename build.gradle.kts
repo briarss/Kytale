@@ -50,10 +50,10 @@ tasks.shadowJar {
     archiveClassifier.set("")
 
     // Relocate Kotlin to avoid conflicts with other plugins
-    relocate("kotlin", "aster.amo.hykot.libs.kotlin")
-    relocate("kotlinx", "aster.amo.hykot.libs.kotlinx")
-    relocate("org.intellij", "aster.amo.hykot.libs.intellij")
-    relocate("org.jetbrains.annotations", "aster.amo.hykot.libs.jetbrains.annotations")
+    relocate("kotlin", "aster.amo.kytale.libs.kotlin")
+    relocate("kotlinx", "aster.amo.kytale.libs.kotlinx")
+    relocate("org.intellij", "aster.amo.kytale.libs.intellij")
+    relocate("org.jetbrains.annotations", "aster.amo.kytale.libs.jetbrains.annotations")
 
     // Minimize JAR by removing unused classes
     minimize {

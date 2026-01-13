@@ -1,4 +1,4 @@
-package aster.amo.hykot.coroutines
+package aster.amo.kytale.coroutines
 
 import com.hypixel.hytale.server.core.plugin.JavaPlugin
 import kotlinx.coroutines.CoroutineScope

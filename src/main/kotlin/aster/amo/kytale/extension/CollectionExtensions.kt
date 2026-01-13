@@ -1,4 +1,4 @@
-package aster.amo.hykot.extension
+package aster.amo.kytale.extension
 
 import java.util.concurrent.ConcurrentHashMap
 

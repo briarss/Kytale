@@ -1,6 +1,6 @@
-package aster.amo.hykot.extension
+package aster.amo.kytale.extension
 
-import aster.amo.hykot.coroutines.HytaleDispatchers
+import aster.amo.kytale.coroutines.HytaleDispatchers
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext

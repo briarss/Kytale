@@ -1,4 +1,4 @@
-package aster.amo.hykot.util
+package aster.amo.kytale.util
 
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration

@@ -1,4 +1,4 @@
-package aster.amo.hykot.coroutines
+package aster.amo.kytale.coroutines
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
