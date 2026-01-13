@@ -17,6 +17,22 @@ Bundles Kotlin runtime with package relocation and provides idiomatic DSLs for p
 
 ## Quick Start
 
+### Gradle Setup
+
+Add the CurseMaven repository and HyKot dependency to your `build.gradle.kts`:
+
+```kotlin
+repositories {
+    maven("https://cursemaven.com")
+}
+
+dependencies {
+    compileOnly("curse.maven:hykot-PROJECTID:FILEID")
+}
+```
+
+### Runtime Dependency
+
 Add HyKot as a dependency in your `manifest.json`:
 
 ```json
@@ -26,6 +42,8 @@ Add HyKot as a dependency in your `manifest.json`:
   }
 }
 ```
+
+### Plugin Setup
 
 Create a plugin extending `KotlinPlugin`:
 
