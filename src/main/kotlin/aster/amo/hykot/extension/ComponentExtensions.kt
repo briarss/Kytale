@@ -121,7 +121,7 @@ class MessageBuilder {
         if (rootMessage == null) {
             rootMessage = msg
         } else {
-            rootMessage!!.children.add(msg)
+            rootMessage!!.insert(msg)
         }
     }
 

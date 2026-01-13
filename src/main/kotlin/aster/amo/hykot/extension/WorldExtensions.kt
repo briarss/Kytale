@@ -7,10 +7,18 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.Executor
 
 /**
- * Extension functions for Hytale World operations.
+ * Extension functions for Hytale World and Universe operations.
+ *
+ * In Hytale's architecture:
+ * - A [Universe] represents the entire server (all Worlds, all player data)
+ * - A [World] is a single game world within the Universe
+ * - Players are accessed via [PlayerRef] from the Universe
  *
  * These extensions provide Kotlin-idiomatic access to world functionality
- * with coroutine support.
+ * with coroutine support for async operations.
+ *
+ * @see com.hypixel.hytale.server.core.universe.Universe
+ * @see com.hypixel.hytale.server.core.universe.World
  */
 
 /**

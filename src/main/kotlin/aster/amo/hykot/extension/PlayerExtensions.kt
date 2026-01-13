@@ -7,8 +7,14 @@ import java.util.UUID
 /**
  * Extension functions for player-related operations.
  *
- * These extensions provide Kotlin-idiomatic access to player functionality
- * with coroutine support for async operations.
+ * In Hytale, players are accessed via [PlayerRef] from the Universe.
+ * A Universe represents the entire server including all Worlds and player data.
+ *
+ * These extensions provide Kotlin-idiomatic utilities that work with
+ * PlayerRef UUIDs and common player operations.
+ *
+ * @see com.hypixel.hytale.server.core.universe.Universe
+ * @see com.hypixel.hytale.server.core.universe.PlayerRef
  */
 
 /**

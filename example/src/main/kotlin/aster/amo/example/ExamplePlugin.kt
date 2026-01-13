@@ -117,15 +117,6 @@ class ExamplePlugin(init: JavaPluginInit) : KotlinPlugin(init) {
      */
     private fun registerEvents() {
         events {
-            // Chat event with formatted response
-            on { event: PlayerChatEvent ->
-                // gold in int
-                val chatMessage = Message.raw("[CHAT]").color("0xA7F400")
-                chatMessage.children.add(Message.raw(event.content))
-                event.content = chatMessage.rawText!!
-                logger.debug { "Chat message: ${chatMessage.rawText}" }
-            }
-
             // Player connect event
             on { event: PlayerConnectEvent ->
                 val playerId = event.playerRef.uuid

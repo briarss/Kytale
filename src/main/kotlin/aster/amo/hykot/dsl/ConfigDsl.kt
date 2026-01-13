@@ -27,7 +27,8 @@ import kotlin.reflect.KProperty
  * class MyPlugin(init: JavaPluginInit) : KotlinPlugin(init) {
  *     val config by jsonConfig<MyConfig>("config") { MyConfig() }
  *
- *     override fun onEnable() {
+ *     override fun start() {
+ *         super.start()
  *         logger.info { config.welcomeMessage }
  *     }
  * }
