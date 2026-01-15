@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "aster.amo.hexweave"
-version = "1.4.0"
+version = "1.4.3"
 val javaVersion = 24
 
 repositories {

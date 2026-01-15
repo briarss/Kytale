@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "aster.amo"
-version = "1.4.0"
+version = "1.4.3"
 val javaVersion = 24
 
 repositories {
@@ -46,12 +46,16 @@ kotlin {
     jvmToolchain(javaVersion)
 }
 
+// Disable regular jar - shadowJar is the primary output
+tasks.jar {
+    archiveClassifier.set("slim")
+}
+
 tasks.shadowJar {
     archiveClassifier.set("")
 
-    // Relocate Kotlin to avoid conflicts with other plugins
-    relocate("kotlin", "aster.amo.kytale.libs.kotlin")
-    relocate("kotlinx", "aster.amo.kytale.libs.kotlinx")
+    // NOTE: Do NOT relocate kotlin/kotlinx - Kytale is a Kotlin library for Kotlin consumers
+    // Relocating Kotlin breaks the public API (Function1, Metadata, etc.)
     relocate("org.intellij", "aster.amo.kytale.libs.intellij")
     relocate("org.jetbrains.annotations", "aster.amo.kytale.libs.jetbrains.annotations")
 
@@ -66,6 +70,15 @@ tasks.shadowJar {
 
 tasks.build {
     dependsOn(tasks.shadowJar)
+    // Ensure subprojects are built with root project
+    dependsOn(":hexweave:build")
+    dependsOn(":gradle-plugin:build")
+}
+
+// Ensure all modules are published together
+tasks.named("publish") {
+    dependsOn(":hexweave:publish")
+    dependsOn(":gradle-plugin:publish")
 }
 
 tasks.named<ProcessResources>("processResources") {

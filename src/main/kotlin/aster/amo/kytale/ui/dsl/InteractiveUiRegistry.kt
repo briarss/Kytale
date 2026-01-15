@@ -129,16 +129,16 @@ object InteractiveUiRegistry {
 }
 
 /**
- * Create and register an interactive page.
+ * Create and register an interactive page in one step.
  *
- * This is a convenience function that creates the page and registers it in one step.
+ * This is a convenience function that creates the page and registers it immediately.
  *
  * @param path The path for the .ui file (e.g., "MyGame/Settings")
  * @param name The page name (used for debugging)
  * @param block The DSL block to define the page
  * @return The created page
  */
-fun interactivePage(path: String, name: String, block: InteractiveUiPage.() -> Unit): InteractiveUiPage {
+fun registerInteractivePage(path: String, name: String, block: InteractiveUiPage.() -> Unit): InteractiveUiPage {
     val page = InteractiveUiPage(name).apply(block)
     InteractiveUiRegistry.register(path, page)
     return page
