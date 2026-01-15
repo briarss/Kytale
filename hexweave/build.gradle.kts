@@ -7,7 +7,7 @@ plugins {
 
 group = "aster.amo.hexweave"
 version = "1.4.4"
-val javaVersion = 24
+val javaVersion = 25
 
 repositories {
     mavenCentral()
