@@ -60,10 +60,6 @@ suspend fun <T> PlayerRef.onMainThread(block: suspend () -> T): T {
     return withContext(HytaleDispatchers.Main) { block() }
 }
 
-// ============================================================================
-// General Utility Functions
-// ============================================================================
-
 /**
  * Executes a block of code on the main thread.
  *
@@ -163,10 +159,6 @@ inline fun <T> safelyWithLogging(onError: (Exception) -> Unit, block: () -> T): 
     }
 }
 
-// ============================================================================
-// UUID Utilities
-// ============================================================================
-
 /**
  * Validates a UUID string.
  *
@@ -193,10 +185,6 @@ fun String.toUUIDOrNull(): UUID? {
         null
     }
 }
-
-// ============================================================================
-// Duration Formatting
-// ============================================================================
 
 /**
  * Formats a player-friendly duration string.
@@ -247,10 +235,6 @@ fun formatDurationDetailed(millis: Long): String {
         append("${seconds % 60}s")
     }.trim()
 }
-
-// ============================================================================
-// String Utilities
-// ============================================================================
 
 /**
  * Truncates a string to the specified length with an ellipsis.
@@ -308,10 +292,6 @@ fun String.camelToTitleCase(): String {
 fun String.snakeToTitleCase(): String {
     return split("_").joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
 }
-
-// ============================================================================
-// Number Formatting
-// ============================================================================
 
 /**
  * Formats a number with thousands separators.

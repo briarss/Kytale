@@ -105,14 +105,42 @@ tasks.withType<Jar> {
 }
 
 publishing {
-    repositories {
-        // Configure publishing repositories here
-    }
-
     publications {
         create<MavenPublication>("maven") {
-            from(components["java"])
+            groupId = "aster.amo"
+            artifactId = "kytale"
+            version = project.version.toString()
+
             artifact(tasks.shadowJar)
+            artifact(tasks.named("sourcesJar"))
+
+            pom {
+                name.set("Kytale")
+                description.set("Kotlin framework for Hytale server plugin development")
+                url.set("https://github.com/AmoAster/Kytale")
+
+                licenses {
+                    license {
+                        name.set("MIT License")
+                        url.set("https://opensource.org/licenses/MIT")
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        mavenLocal()
+        maven {
+            name = "PokeSkies"
+            url = uri("https://maven.pokeskies.com/releases")
+            credentials {
+                username = project.findProperty("pokeskiesUsername") as String? ?: System.getenv("POKESKIES_USERNAME")
+                password = project.findProperty("pokeskiesPassword") as String? ?: System.getenv("POKESKIES_PASSWORD")
+            }
+            authentication {
+                create("basic", BasicAuthentication::class.java)
+            }
         }
     }
 }
@@ -121,5 +149,25 @@ idea {
     module {
         isDownloadSources = true
         isDownloadJavadoc = true
+    }
+}
+
+// Task to compile UI definitions to .ui files
+tasks.register<JavaExec>("compileUi") {
+    group = "build"
+    description = "Compile Kytale UI DSL definitions to .ui files"
+
+    dependsOn("compileKotlin")
+
+    val mainSourceSet = sourceSets.main.get()
+    classpath = mainSourceSet.compileClasspath.plus(mainSourceSet.output)
+
+    mainClass.set("aster.amo.kytale.ui.dsl.UiScanner")
+
+    val outputDir = file("src/main/resources/Common/UI/Custom/Pages")
+    args(outputDir.absolutePath, "aster.amo.kytale.ui.test")
+
+    doFirst {
+        println("Compiling UI definitions to: ${outputDir.absolutePath}")
     }
 }

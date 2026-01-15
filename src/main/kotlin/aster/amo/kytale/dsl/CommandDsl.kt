@@ -62,6 +62,8 @@ class CommandBuilder(
     @PublishedApi internal val aliases = mutableListOf<String>()
     @PublishedApi internal val subcommands = mutableListOf<CommandBuilder>()
     @PublishedApi internal var executor: (suspend (CommandContext) -> Unit)? = null
+    @PublishedApi internal var syncExecutor: ((CommandContext) -> Unit)? = null
+    @PublishedApi internal var futureExecutor: ((CommandContext) -> CompletableFuture<Void>?)? = null
 
     /**
      * Adds aliases for this command.
@@ -94,6 +96,49 @@ class CommandBuilder(
      */
     fun executes(block: suspend (context: CommandContext) -> Unit) {
         executor = block
+    }
+
+    /**
+     * Sets a synchronous execution handler for this command.
+     *
+     * Use this when the command needs to access thread-sensitive resources
+     * like entity stores that require execution on the world thread.
+     *
+     * Example:
+     * ```kotlin
+     * executesSync { ctx ->
+     *     val player = ctx.sender() as Player
+     *     player.pageManager.openCustomPage(...)
+     * }
+     * ```
+     *
+     * @param block the function to execute synchronously on the calling thread
+     */
+    fun executesSync(block: (context: CommandContext) -> Unit) {
+        syncExecutor = block
+    }
+
+    /**
+     * Sets an execution handler that returns a CompletableFuture.
+     *
+     * Use this when you need full control over threading, such as
+     * dispatching to a specific world thread.
+     *
+     * Example:
+     * ```kotlin
+     * executesFuture { ctx ->
+     *     val player = ctx.sender() as Player
+     *     val world = player.reference.store.externalData.world
+     *     CompletableFuture.runAsync({
+     *         // Code runs on world thread
+     *     }, world)
+     * }
+     * ```
+     *
+     * @param block the function that returns a CompletableFuture
+     */
+    fun executesFuture(block: (context: CommandContext) -> CompletableFuture<Void>?) {
+        futureExecutor = block
     }
 
     /**
@@ -130,6 +175,8 @@ class CommandBuilder(
     @PublishedApi
     internal fun build(): AbstractCommand {
         val exec = executor
+        val syncExec = syncExecutor
+        val futureExec = futureExecutor
         val subs = subcommands.toList()
         val aliasArray = aliases.toTypedArray()
 
@@ -144,6 +191,13 @@ class CommandBuilder(
             }
 
             override fun execute(context: CommandContext): CompletableFuture<Void>? {
+                if (futureExec != null) {
+                    return futureExec(context) ?: CompletableFuture.completedFuture(null)
+                }
+                if (syncExec != null) {
+                    syncExec(context)
+                    return CompletableFuture.completedFuture(null)
+                }
                 if (exec == null) {
                     return CompletableFuture.completedFuture(null)
                 }

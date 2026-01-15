@@ -75,7 +75,6 @@ class JsonConfigDelegate<T : Any>(
 
     private val configPath: Path
         get() {
-            // Sanitize plugin name for filesystem (replace colons, etc.)
             val safeName = plugin.name.split(":").last().replace(":", "_").replace("/", "_").replace("\\", "_")
             return File("mobs/$safeName/$fileName.json").toPath()
         }

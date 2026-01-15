@@ -2,6 +2,7 @@
   "Group": "${plugin_group}",
   "Name": "${plugin_name}",
   "Version": "${plugin_version}",
+  "Build": "1",
   "Description": "${plugin_description}",
   "Authors": [
     {

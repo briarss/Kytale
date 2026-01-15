@@ -15,3 +15,5 @@ plugins {
 rootProject.name = "Kytale"
 
 include("example")
+include("hexweave")
+include("gradle-plugin")

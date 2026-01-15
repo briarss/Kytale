@@ -78,7 +78,6 @@ abstract class KotlinPlugin(init: JavaPluginInit) : JavaPlugin(init), CoroutineS
      */
     override fun setup() {
         super.setup()
-        // Subclasses register events/commands/systems here
     }
 
     /**
@@ -89,7 +88,6 @@ abstract class KotlinPlugin(init: JavaPluginInit) : JavaPlugin(init), CoroutineS
      */
     override fun start() {
         super.start()
-        // Subclasses perform post-setup initialization here
     }
 
     /**

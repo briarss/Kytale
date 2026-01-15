@@ -18,6 +18,7 @@ repositories {
 dependencies {
     // Depend on Kytale - provides Kotlin runtime
     implementation(project(":"))
+    compileOnly(project(":hexweave"))
 
     // Compile-only annotations
     compileOnly(libs.jetbrains.annotations)
