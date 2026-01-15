@@ -7,8 +7,8 @@ plugins {
 }
 
 group = "aster.amo"
-version = "1.4.3"
-val javaVersion = 24
+version = "1.4.4"
+val javaVersion = 25
 
 repositories {
     mavenCentral()
@@ -17,21 +17,36 @@ repositories {
     }
 }
 
+val shadowBundle: Configuration by configurations.creating {
+    isCanBeConsumed = false
+    isCanBeResolved = true
+    isTransitive = false
+}
+
+val shadowTransitive: Configuration by configurations.creating {
+    isCanBeConsumed = false
+    isCanBeResolved = true
+}
+
 dependencies {
-    // Kotlin standard library and reflection
     api(libs.kotlin.stdlib)
     api(libs.kotlin.reflect)
 
-    // Kotlin coroutines
     api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.coroutines.jdk8)
 
-    // Kotlin serialization
     api(libs.kotlinx.serialization.json)
 
-    // Compile-only annotations
     compileOnly(libs.jetbrains.annotations)
     compileOnly(libs.jspecify)
+
+    shadowTransitive(libs.kotlin.stdlib)
+    shadowTransitive(libs.kotlin.reflect)
+    shadowTransitive(libs.kotlinx.coroutines.core)
+    shadowTransitive(libs.kotlinx.coroutines.jdk8)
+    shadowTransitive(libs.kotlinx.serialization.json)
+
+    shadowBundle(project(":hexweave"))
 }
 
 java {
@@ -46,23 +61,18 @@ kotlin {
     jvmToolchain(javaVersion)
 }
 
-// Disable regular jar - shadowJar is the primary output
 tasks.jar {
     archiveClassifier.set("slim")
 }
 
 tasks.shadowJar {
     archiveClassifier.set("")
+    configurations = listOf(shadowBundle, shadowTransitive)
 
-    // NOTE: Do NOT relocate kotlin/kotlinx - Kytale is a Kotlin library for Kotlin consumers
-    // Relocating Kotlin breaks the public API (Function1, Metadata, etc.)
-    relocate("org.intellij", "aster.amo.kytale.libs.intellij")
-    relocate("org.jetbrains.annotations", "aster.amo.kytale.libs.jetbrains.annotations")
-
-    // Minimize JAR by removing unused classes
     minimize {
         exclude(dependency("org.jetbrains.kotlin:.*"))
         exclude(dependency("org.jetbrains.kotlinx:.*"))
+        exclude(project(":hexweave"))
     }
 
     mergeServiceFiles()
@@ -70,12 +80,10 @@ tasks.shadowJar {
 
 tasks.build {
     dependsOn(tasks.shadowJar)
-    // Ensure subprojects are built with root project
     dependsOn(":hexweave:build")
     dependsOn(":gradle-plugin:build")
 }
 
-// Ensure all modules are published together
 tasks.named("publish") {
     dependsOn(":hexweave:publish")
     dependsOn(":gradle-plugin:publish")
