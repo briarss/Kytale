@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "aster.amo"
-version = "1.1.0"
+version = "1.4.0"
 
 repositories {
     mavenCentral()
